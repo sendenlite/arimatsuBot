@@ -58,7 +58,11 @@ for line in res.iter_lines():
         tw_data = json.loads(decoded_line)
         print(tw_data)
         try:        
-            if tw_data["in_reply_to_screen_name"] == "bdbdbot" and tw_data["user"]["screen_name"] == "senden_lite":
+            if tw_data["in_reply_to_screen_name"] == "bdbdbot":
+                if os.path.exists("data/{}.dat".format(tw_data["user"]["screen_name"])):
+                    pass
+                else:
+                    continue
                 sentence = ""
                 check = -1
                 check = tw_data["text"].find("通学アリマツ")
@@ -98,5 +102,5 @@ for line in res.iter_lines():
                     data = {"status":sentence,"in_reply_to_status_id":tw_data["id_str"]}
                     res2 = requests.post(update_url, data=data, auth=auth)
                     save_arimatsu(tw_data["user"]["screen_name"])
-        except KeyError:
+        except (KeyError, ValueError):
             pass
