@@ -56,23 +56,24 @@ for line in res.iter_lines():
     if line:
         decoded_line = line.decode('utf-8')
         tw_data = json.loads(decoded_line)
-        print(tw_data)
         try:        
             if tw_data["in_reply_to_screen_name"] == "bdbdbot":
                 if os.path.exists("data/{}.dat".format(tw_data["user"]["screen_name"])):
                     pass
                 else:
                     continue
+                print(tw_data)
                 sentence = ""
                 check = -1
                 check = tw_data["text"].find("通学アリマツ")
                 if check != -1:
                     load_arimatsu(tw_data["user"]["screen_name"])
                     if tw_data["user"]["screen_name"] == "senden_lite": add = 2.54
-                    elif tw_data["user"]["screen_name"] == "coppupan_lrc": add = 13.9
-                    elif tw_data["user"]["screen_name"] == "ChyMzkP": add = 7.2
+                    elif tw_data["user"]["screen_name"] == "coppupan_lrc": add = 9.2
+                    elif tw_data["user"]["screen_name"] == "ChyMzkP": add = 0
                     arimatsu = round(arimatsu + add,2)
-                    sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。\n{}".format(tw_data["user"]["screen_name"],add*10,add,arimatsu,datetime.now())
+                    sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。\n{}".format(tw_data["user"]["screen_name"],add*10,add,arimatsu,datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+                    if add ==9.2: sentence = "@{}\n鉄道で14.4km移動。7.2アリマツ付与。往復でアリマツを2回通過。2アリマツ付与\n計{}アリマツ\n{}".format(tw_data["user"]["screen_name"],arimatsu,datetimen.now().strftime('%Y/%m/%d %H:%M:%S'))
                 check = -1
                 check = tw_data["text"].find("鉄道アリマツ")
                 if check != -1:
@@ -82,7 +83,7 @@ for line in res.iter_lines():
                     add = round(float(tw_data["text"][sindex+1:findex])/10,2)
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu + add,2)
-                    sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。\n{}".format(tw_data["user"]["screen_name"],add*10,add,arimatsu,datetime.now())
+                    sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。\n{}".format(tw_data["user"]["screen_name"],add*10,add,arimatsu,datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 check = -1
                 check = tw_data["text"].find("アリマツ付与")
                 if check != -1:
@@ -92,8 +93,13 @@ for line in res.iter_lines():
                     add = round(float(tw_data["text"][sindex+1:findex]),2)
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu + add,2)
-                    sentence = "@{}\n{}アリマツ付与。\n計{}アリマツ。\n{}".format(tw_data["user"]["screen_name"],add,arimatsu,datetime.now())
-
+                    sentence = "@{}\n{}アリマツ付与。\n計{}アリマツ。\n{}".format(tw_data["user"]["screen_name"],add,arimatsu,datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+                check = -1
+                check = tw_data["text"].find("ニューアリマツ")
+                if check != -1:
+                    load_arimatsu(tw_data["user"]["screen_name"])
+                    arimatsu = round(arimatsu - 50,2)
+                    sentence = "@{}\nニューアリマツ建造。50アリマツ消費。\n計{}アリマツ。\n{}".format(tw_data["user"]["screen_name"],arimatsu,datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
 
 
 
