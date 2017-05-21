@@ -81,7 +81,7 @@ for line in res.iter_lines():
                     elif tw_data["user"]["screen_name"] == "ChyMzkP": add = 0
                     arimatsu = round(arimatsu + add,2)
                     sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],add*10,add,arimatsu)
-                    if add ==9.2: sentence = "@{}\n鉄道で14.4km移動。7.2アリマツ付与。往復でアリマツを2回通過。2アリマツ付与\n計{}アリマツ".format(tw_data["user"]["screen_name"])
+                    if add == 9.2: sentence = "@{}\n鉄道で144km移動。7.2アリマツ付与。往復でアリマツを2回通過。2アリマツ付与\n計{}アリマツ".format(tw_data["user"]["screen_name"],arimatsu)
                 check = -1
                 check = tw_data["text"].find("鉄道アリマツ")
                 if check != -1:
