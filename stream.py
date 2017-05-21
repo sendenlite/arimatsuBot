@@ -5,6 +5,7 @@ from datetime import datetime,timedelta
 import sys
 import os
 import json
+import math
 # requstsライブラリをインポート
 import requests
 from requests_oauthlib import OAuth1
@@ -107,6 +108,16 @@ for line in res.iter_lines():
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu - 50,2)
                     sentence = "@{}\nニューアリマツ建造。50アリマツ消費。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],arimatsu)
+                check = -1
+                check = tw_data["text"].find("バイトアリマツ")
+                if check != -1:
+                    sindex = tw_data["text"].find("(")
+                    findex = tw_data["text"].find(")")
+                    if sindex+1 == findex: continue
+                    add = round(math.log10(float(tw_data["text"][sindex+1:findex])),2)
+                    load_arimatsu(tw_data["user"]["screen_name"])
+                    arimatsu = round(arimatsu + add,2)
+                    sentence = "@{}\nバイトアリマツ{}付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],add,arimatsu)
                 check = -1
                 check = tw_data["text"].find("nosave")
                 if check != -1 and tw_data["user"]["screen_name"] == "senden_lite":
