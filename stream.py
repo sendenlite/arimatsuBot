@@ -135,6 +135,15 @@ for line in res.iter_lines():
                     arimatsu = round(arimatsu + add,2)
                     sentence = "@{}\nバイトアリマツ{}付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],add,arimatsu)
                 check = -1
+                check = tw_data["text"].find("arimatsuset")
+                if check != -1:
+                    sindex = tw_data["text"].find("(")
+                    findex = tw_data["text"].find(")")
+                    if sindex+1 == findex: continue
+                    add = round(float(tw_data["text"][sindex+1:findex]),2)
+                    load_arimatsu(tw_data["user"]["screen_name"])
+                    arimatsu = round(add,2)
+                    sentence = "@{}\narimatsu set.".format(tw_data["user"]["screen_name"])
                 check = tw_data["text"].find("nosave")
                 if check != -1 and tw_data["user"]["screen_name"] == "senden_lite":
                     load_arimatsu(tw_data["user"]["screen_name"])
