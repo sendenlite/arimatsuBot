@@ -110,6 +110,9 @@ for line in res.iter_lines():
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu - 50,2)
                     sentence = "@{}\nニューアリマツ建造。50アリマツ消費。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],arimatsu)
+                    if arimatsu < 0:
+                        arimatsu += 50
+                        sentence = "@{}\nアリマツ不足です。50以上アリマツがあるときに建造してください".format(tw_data["user"]["screen_name"])
                 check = -1
                 check = tw_data["text"].find("バイトアリマツ")
                 if check != -1:
