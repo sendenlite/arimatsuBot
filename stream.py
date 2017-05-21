@@ -165,13 +165,13 @@ for line in res.iter_lines():
                     sentence = "@{}\nnosave_mode is now {}".format(tw_data["user"]["screen_name"],stat)
                 check = -1
                 check = tw_data["text"].find("生きてる")
-                load_arimatsu(tw_data["user"]["screen_name"])
                 if check != -1:
+                    load_arimatsu(tw_data["user"]["screen_name"])
                     sentence = "@{}\n（ ゜□ﾟ)＜せいぞん、せんりゃくうううううううう！！\nイマージーン！\nきっと何者にもなれないお前たちに告げる！\nhttp://nico.ms/sm24877123\n{}".format(tw_data["user"]["screen_name"],datetime.now().strftime("%s"))
                 check = -1
                 check = tw_data["text"].find("生存戦略")
-                load_arimatsu(tw_data["user"]["screen_name"])
                 if check != -1:
+                    load_arimatsu(tw_data["user"]["screen_name"])
                     sentence = "@{}\n（ ゜□ﾟ)＜せいぞん、せんりゃくうううううううう！！\nイマージーン！\nきっと何者にもなれないお前たちに告げる！\nhttp://nico.ms/sm24877123\n{}".format(tw_data["user"]["screen_name"],datetime.now().strftime("%s"))
 
 
