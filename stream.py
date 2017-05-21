@@ -114,6 +114,10 @@ for line in res.iter_lines():
                         arimatsu += 50
                         sentence = "@{}\nアリマツ不足です。50以上アリマツがあるときに建造してください".format(tw_data["user"]["screen_name"])
                 check = -1
+                check = tw_data["text"].find("アリマツ確認")
+                if check != -1:
+                    load_arimatsu(tw_data["user"]["screen_name"])
+                    sentence = "@{}\n{}の現在所持：{}アリマツ".format(tw_data["user"]["screen_name"],tw_data["user"]["screen_name"],arimatsu)
                 check = tw_data["text"].find("バイトアリマツ")
                 if check != -1:
                     sindex = tw_data["text"].find("(")
