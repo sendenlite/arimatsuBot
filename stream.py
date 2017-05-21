@@ -15,8 +15,14 @@ def load_arimatsu(name):
     f0.close()
     global arimatsu
     arimatsu = float(txt[0].replace("\n",""))
+    global arimatsu2
+    arimatsu2 = arimatsu
 
 def save_arimatsu(name):
+    global arimatsu
+    global arimatsu2
+    if nosave_mode == 1 and name =="senden_lite":
+        arimatsu = arimatsu2
     f1 = open("data/{}.dat".format(name),"w")
     f1.write(str(arimatsu))
     f1.close()
@@ -49,6 +55,7 @@ streaming_url = "https://userstream.twitter.com/1.1/user.json"
 
 data = {}
 res = requests.post(streaming_url, auth=auth, stream=True, data=data)
+nosave_mode = 0
 
 print(res)
 print("steam start")
@@ -100,6 +107,15 @@ for line in res.iter_lines():
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu - 50,2)
                     sentence = "@{}\nニューアリマツ建造。50アリマツ消費。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],arimatsu)
+                check = -1
+                check = tw_data["text"].find("nosave")
+                if check != -1 and tw_data["user"]["screen_name"] == "senden_lite":
+                    load_arimatsu(tw_data["user"]["screen_name"])
+                    nosave_mode += 1
+                    if nosave_mode >= 2: nosave_mode = 0
+                    stat = "on"
+                    if nosave_mode == 0: stat = "off"
+                    sentence = "@{}\nnosave_mode is now {}".format(tw_data["user"]["screen_name"],stat)
 
 
 
