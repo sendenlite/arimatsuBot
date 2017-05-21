@@ -144,6 +144,17 @@ for line in res.iter_lines():
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(add,2)
                     sentence = "@{}\narimatsu set.".format(tw_data["user"]["screen_name"])
+                check = -1
+                check = tw_data["text"].find("ただいま")
+                if check != -1:
+                    load_arimatsu(tw_data["user"]["screen_name"])
+                    if tw_data["user"]["screen_name"] == "senden_lite": add = 2.54
+                    elif tw_data["user"]["screen_name"] == "coppupan_lrc": add = 9.2
+                    elif tw_data["user"]["screen_name"] == "ChyMzkP": add = 0
+                    arimatsu = round(arimatsu + add,2)
+                    sentence = "@{} おかえりなさい。\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],add*10,add,arimatsu)
+                    if add == 9.2: sentence = "@{} おかえりなさい。\n鉄道で144km移動。7.2アリマツ付与。往復でアリマツを2回通過。2アリマツ付与\n計{}アリマツ".format(tw_data["user"]["screen_name"],arimatsu)
+                check = -1
                 check = tw_data["text"].find("nosave")
                 if check != -1 and tw_data["user"]["screen_name"] == "senden_lite":
                     load_arimatsu(tw_data["user"]["screen_name"])
