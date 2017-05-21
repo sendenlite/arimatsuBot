@@ -118,6 +118,13 @@ for line in res.iter_lines():
                 if check != -1:
                     load_arimatsu(tw_data["user"]["screen_name"])
                     sentence = "@{}\n{}の現在所持：{}アリマツ".format(tw_data["user"]["screen_name"],tw_data["user"]["screen_name"],arimatsu)
+                check = -1
+                check = tw_data["text"].find("レポートアリマツ")
+                if check != -1:
+                    load_arimatsu(tw_data["user"]["screen_name"])
+                    arimatsu = round(arimatsu + 5,2)
+                    sentence = "@{}\nレポートアリマツ5アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],arimatsu)
+                check = -1
                 check = tw_data["text"].find("バイトアリマツ")
                 if check != -1:
                     sindex = tw_data["text"].find("(")
