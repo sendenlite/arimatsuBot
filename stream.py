@@ -99,6 +99,8 @@ for line in res.iter_lines():
                     findex = tw_data["text"].find(")")
                     if sindex+1 == findex: continue
                     add = round(float(tw_data["text"][sindex+1:findex]),2)
+                    if add >= 1145148101920: continue
+                    if add <= -1145148101920: continue
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu + add,2)
                     sentence = "@{}\n{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],add,arimatsu)
