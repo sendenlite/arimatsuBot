@@ -59,7 +59,7 @@ res = requests.post(streaming_url, auth=auth, stream=True, data=data)
 nosave_mode = 0
 
 print(res)
-print("steam start")
+print("stream start")
 for line in res.iter_lines():
     if line:
         decoded_line = line.decode('utf-8')
