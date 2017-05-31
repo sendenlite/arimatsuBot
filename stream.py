@@ -194,6 +194,8 @@ for line in res.iter_lines():
 
 
                 if sentence != "":
+                    if nosave_mode == 1 and tw_data["user"]["screen_name"] == "senden_lite":
+                        sentence += (nosave)
                     data = {"status":sentence,"in_reply_to_status_id":tw_data["id_str"]}
                     res2 = requests.post(update_url, data=data, auth=auth)
                     save_arimatsu(tw_data["user"]["screen_name"])
