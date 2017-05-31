@@ -91,6 +91,16 @@ for line in res.iter_lines():
                     if str(tw_data["text"][sindex+1:findex]).find("*2") != -1:
                         findex = tw_data["text"].find("*2")
                         add = round((float(tw_data["text"][sindex+1:findex])*2)/10,2)
+                    elif str(tw_data["text"][sindex+1:findex]).count("+") != 0:
+                        count_plus = str(tw_data["text"][sindex+1:findex]).count("+")
+                        findex = tw_data["text"].find("+")
+                        add = round(float(tw_data["text"][sindex+1:findex])/10,2)
+                        for i in range(count_plus):
+                            sindex = findex
+                            findex = tw_data["text"].find("+", findex + 1)
+                            if findex == -1:
+                                findex = tw_data["text"].find(")")
+                            add += round(float(tw_data["text"][sindex+1:findex])/10,2)
                     else:
                         add = round(float(tw_data["text"][sindex+1:findex])/10,2)
                     load_arimatsu(tw_data["user"]["screen_name"])
