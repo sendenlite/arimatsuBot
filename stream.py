@@ -105,7 +105,7 @@ for line in res.iter_lines():
                         add = round(float(tw_data["text"][sindex+1:findex])/10,2)
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu + add,2)
-                    sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],add*10,add,arimatsu)
+                    sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],round(add*10,5),add,arimatsu)
                 check = -1
                 check = tw_data["text"].find("アリマツ付与")
                 if check != -1:
@@ -195,7 +195,7 @@ for line in res.iter_lines():
 
                 if sentence != "":
                     if nosave_mode == 1 and tw_data["user"]["screen_name"] == "senden_lite":
-                        sentence += (nosave)
+                        sentence += "(nosave)"
                     data = {"status":sentence,"in_reply_to_status_id":tw_data["id_str"]}
                     res2 = requests.post(update_url, data=data, auth=auth)
                     save_arimatsu(tw_data["user"]["screen_name"])
