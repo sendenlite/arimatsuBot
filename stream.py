@@ -57,6 +57,8 @@ streaming_url = "https://userstream.twitter.com/1.1/user.json"
 data = {}
 res = requests.post(streaming_url, auth=auth, stream=True, data=data)
 nosave_mode = 0
+twice_flag = 0
+
 
 print(res)
 print("stream start")
@@ -90,8 +92,8 @@ for line in res.iter_lines():
                     if sindex+1 == findex: continue
                     if str(tw_data["text"][sindex+1:findex]).find("*2") != -1:
                         findex = tw_data["text"].find("*2")
-                        add = round((float(tw_data["text"][sindex+1:findex])*2)/10,2)
-                    elif str(tw_data["text"][sindex+1:findex]).count("+") != 0:
+                        twice_flag = 1
+                    if str(tw_data["text"][sindex+1:findex]).count("+") != 0:
                         count_plus = str(tw_data["text"][sindex+1:findex]).count("+")
                         findex = tw_data["text"].find("+")
                         add = round(float(tw_data["text"][sindex+1:findex])/10,2)
@@ -99,10 +101,15 @@ for line in res.iter_lines():
                             sindex = findex
                             findex = tw_data["text"].find("+", findex + 1)
                             if findex == -1:
-                                findex = tw_data["text"].find(")")
+                                if twice_flag == 1:
+                                    findex = tw_data["text"].find("*2")
+                                else:
+                                    findex = tw_data["text"].find(")")
                             add += round(float(tw_data["text"][sindex+1:findex])/10,2)
                     else:
                         add = round(float(tw_data["text"][sindex+1:findex])/10,2)
+                    if twice_flag == 1:
+                        add *= 2
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu + add,2)
                     sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],round(add*10,5),add,arimatsu)
@@ -117,7 +124,7 @@ for line in res.iter_lines():
                     if add <= -1145148101920: continue
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu + add,2)
-                    sentence = "@{}\n{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],add,arimatsu)
+                    sentence = "@{}\n{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],round(add*10,5),arimatsu)
                 check = -1
                 check = tw_data["text"].find("ニューアリマツ")
                 if check != -1:
