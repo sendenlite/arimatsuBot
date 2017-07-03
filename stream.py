@@ -194,9 +194,9 @@ for line in res.iter_lines():
                 if check != -1:
                     load_arimatsu(tw_data["user"]["screen_name"])
                     sentence = "@{}\n（ ゜□ﾟ)＜せいぞん、せんりゃくうううううううう！！\nイマージーン！\nきっと何者にもなれないお前たちに告げる！\nhttp://nico.ms/sm24877123\n{}".format(tw_data["user"]["screen_name"],datetime.now().strftime("%s"))
-
-
-
+                if tw_data["text"][0:16] == "@bdbdbot python:" or tw_data["text"][0:11] == "@bdbdbot c:":
+                    load_arimatsu(tw_data["user"]["screen_name"])
+                    sentence = "@paiza_run"+tw_data["text"][8:]
 
 
 
