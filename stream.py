@@ -197,7 +197,10 @@ for line in res.iter_lines():
                 if tw_data["text"][0:16] == "@bdbdbot python:" or tw_data["text"][0:11] == "@bdbdbot c:":
                     load_arimatsu(tw_data["user"]["screen_name"])
                     sentence = "@paiza_run"+tw_data["text"][8:]
-
+                    from_user = tw_data["user"]["screen_name"]
+                if tw_data["user"]["screen_name"] == "paiza_run":
+                    load_arimatsu("null")
+                    sentence = "@paiza_run @{}".format(from_user)
 
 
                 if sentence != "":
