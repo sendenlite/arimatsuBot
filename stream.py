@@ -11,13 +11,19 @@ import requests
 from requests_oauthlib import OAuth1
 
 def load_arimatsu(name):
-    f0 = open("data/{}.dat".format(name),"r")
-    txt = f0.readlines()
-    f0.close()
-    global arimatsu
-    arimatsu = float(txt[0].replace("\n",""))
-    global arimatsu2
-    arimatsu2 = arimatsu
+    if name == "null":
+        global arimatsu
+        global arimatsu2
+        arimatsu = 0
+        arimatsu2 = 0
+    else:
+        f0 = open("data/{}.dat".format(name),"r")
+        txt = f0.readlines()
+        f0.close()
+        global arimatsu
+        arimatsu = float(txt[0].replace("\n",""))
+        global arimatsu2
+        arimatsu2 = arimatsu
 
 def save_arimatsu(name):
     global arimatsu
@@ -187,15 +193,15 @@ for line in res.iter_lines():
                 check = -1
                 check = tw_data["text"].find("生きてる")
                 if check != -1:
-                    load_arimatsu(tw_data["user"]["screen_name"])
+                    load_arimatsu("null")
                     sentence = "@{}\n（ ゜□ﾟ)＜せいぞん、せんりゃくうううううううう！！\nイマージーン！\nきっと何者にもなれないお前たちに告げる！\nhttp://nico.ms/sm24877123\n{}".format(tw_data["user"]["screen_name"],datetime.now().strftime("%s"))
                 check = -1
                 check = tw_data["text"].find("生存戦略")
                 if check != -1:
-                    load_arimatsu(tw_data["user"]["screen_name"])
+                    load_arimatsu("null")
                     sentence = "@{}\n（ ゜□ﾟ)＜せいぞん、せんりゃくうううううううう！！\nイマージーン！\nきっと何者にもなれないお前たちに告げる！\nhttp://nico.ms/sm24877123\n{}".format(tw_data["user"]["screen_name"],datetime.now().strftime("%s"))
                 if tw_data["text"][0:16] == "@bdbdbot python:" or tw_data["text"][0:11] == "@bdbdbot c:":
-                    load_arimatsu(tw_data["user"]["screen_name"])
+                    load_arimatsu("null")
                     sentence = "@paiza_run"+tw_data["text"][8:]
                     from_user = tw_data["user"]["screen_name"]
                 if tw_data["user"]["screen_name"] == "paiza_run":
