@@ -6,24 +6,19 @@ import sys
 import os
 import json
 import math
+from time import sleep
 # requstsライブラリをインポート
 import requests
 from requests_oauthlib import OAuth1
 
 def load_arimatsu(name):
-    if name == "null":
-        global arimatsu
-        global arimatsu2
-        arimatsu = 0
-        arimatsu2 = 0
-    else:
-        f0 = open("data/{}.dat".format(name),"r")
-        txt = f0.readlines()
-        f0.close()
-        global arimatsu
-        arimatsu = float(txt[0].replace("\n",""))
-        global arimatsu2
-        arimatsu2 = arimatsu
+    global arimatsu
+    global arimatsu2
+    f0 = open("data/{}.dat".format(name),"r")
+    txt = f0.readlines()
+    f0.close()
+    arimatsu = float(txt[0].replace("\n",""))
+    arimatsu2 = arimatsu
 
 def save_arimatsu(name):
     global arimatsu
@@ -59,12 +54,13 @@ auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
 timeline_url = "https://api.twitter.com/1.1/statuses/user_timeline.json"
 update_url =  "https://api.twitter.com/1.1/statuses/update.json"
 streaming_url = "https://userstream.twitter.com/1.1/user.json"
+mention_url = "https://api.twitter.com/1.1/statuses/mentions_timeline.json"
 
 data = {}
 res = requests.post(streaming_url, auth=auth, stream=True, data=data)
 nosave_mode = 0
 twice_flag = 0
-
+reply_id = ""
 
 print(res)
 print("stream start")
@@ -193,26 +189,33 @@ for line in res.iter_lines():
                 check = -1
                 check = tw_data["text"].find("生きてる")
                 if check != -1:
-                    load_arimatsu("null")
+                    load_arimatsu(tw_data["user"]["screen_name"])
                     sentence = "@{}\n（ ゜□ﾟ)＜せいぞん、せんりゃくうううううううう！！\nイマージーン！\nきっと何者にもなれないお前たちに告げる！\nhttp://nico.ms/sm24877123\n{}".format(tw_data["user"]["screen_name"],datetime.now().strftime("%s"))
                 check = -1
                 check = tw_data["text"].find("生存戦略")
                 if check != -1:
-                    load_arimatsu("null")
+                    load_arimatsu(tw_data["user"]["screen_name"])
                     sentence = "@{}\n（ ゜□ﾟ)＜せいぞん、せんりゃくうううううううう！！\nイマージーン！\nきっと何者にもなれないお前たちに告げる！\nhttp://nico.ms/sm24877123\n{}".format(tw_data["user"]["screen_name"],datetime.now().strftime("%s"))
                 if tw_data["text"][0:16] == "@bdbdbot python:" or tw_data["text"][0:11] == "@bdbdbot c:":
-                    load_arimatsu("null")
+                    load_arimatsu(tw_data["user"]["screen_name"])
                     sentence = "@paiza_run"+tw_data["text"][8:]
-                    from_user = tw_data["user"]["screen_name"]
-                if tw_data["user"]["screen_name"] == "paiza_run":
-                    load_arimatsu("null")
-                    sentence = "@paiza_run @{}".format(from_user)
-
+                    data = {"status":sentence,"in_reply_to_status_id":tw_data["id_str"]}
+                    res2 = requests.post(update_url, data=data, auth=auth)
+                    sleep(0.5)
+                    params = {"count":2}
+                    res = requests.get(mention_url, params=params,  auth=auth)
+                    status_list = res.json()
+                    for status in status_list:
+                        sentence = "@paiza_run @{}".format(tw_data["user"]["screen_name"])
+                        reply_id = status["id_str"]
 
                 if sentence != "":
                     if nosave_mode == 1 and tw_data["user"]["screen_name"] == "senden_lite":
                         sentence += "(nosave)"
                     data = {"status":sentence,"in_reply_to_status_id":tw_data["id_str"]}
+                    if reply_id != "":
+                        data = {"status":sentence,"in_reply_to_status_id":reply_id}
+                        reply_id = ""   
                     res2 = requests.post(update_url, data=data, auth=auth)
                     save_arimatsu(tw_data["user"]["screen_name"])
         except (KeyError, ValueError):
