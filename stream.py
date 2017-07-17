@@ -7,6 +7,7 @@ import os
 import json
 import math
 from time import sleep
+from janome.tokenizer import Tokenizer
 # requstsライブラリをインポート
 import requests
 from requests_oauthlib import OAuth1
@@ -30,6 +31,7 @@ def save_arimatsu(name):
     f1.close()
 
 userid = "bdbdbot"
+
 
 count = 0
 for line in open("data/CONSUMER.dat","r"):
@@ -199,15 +201,18 @@ for line in res.iter_lines():
                 if tw_data["text"][0:16] == "@bdbdbot python:" or tw_data["text"][0:11] == "@bdbdbot c:":
                     load_arimatsu(tw_data["user"]["screen_name"])
                     sentence = "@paiza_run"+tw_data["text"][8:]
-                    data = {"status":sentence,"in_reply_to_status_id":tw_data["id_str"]}
+                    data = {"status":sentence}
                     res2 = requests.post(update_url, data=data, auth=auth)
-                    sleep(0.5)
+                    sleep(3)
                     params = {"count":2}
-                    res = requests.get(mention_url, params=params,  auth=auth)
-                    status_list = res.json()
+                    res3 = requests.get(mention_url, params=params,  auth=auth)
+                    status_list = res3.json()
                     for status in status_list:
                         sentence = "@paiza_run @{}".format(tw_data["user"]["screen_name"])
-                        reply_id = status["id_str"]
+                        if status["user"]["screen_name"] == "paiza_run":
+                            reply_id = status["id_str"]
+
+
 
                 if sentence != "":
                     if nosave_mode == 1 and tw_data["user"]["screen_name"] == "senden_lite":
