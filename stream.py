@@ -63,6 +63,7 @@ res = requests.post(streaming_url, auth=auth, stream=True, data=data)
 nosave_mode = 0
 twice_flag = 0
 reply_id = ""
+t=Tokenizer()
 
 print(res)
 print("stream start")
@@ -128,7 +129,7 @@ for line in res.iter_lines():
                     if add <= -1145148101920: continue
                     load_arimatsu(tw_data["user"]["screen_name"])
                     arimatsu = round(arimatsu + add,2)
-                    sentence = "@{}\n{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],round(add*10,5),arimatsu)
+                    sentence = "@{}\n{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],round(add,5),arimatsu)
                 check = -1
                 check = tw_data["text"].find("ニューアリマツ")
                 if check != -1:
@@ -177,8 +178,18 @@ for line in res.iter_lines():
                     elif tw_data["user"]["screen_name"] == "coppupan_lrc": add = 9.2
                     elif tw_data["user"]["screen_name"] == "ChyMzkP": add = 0
                     arimatsu = round(arimatsu + add,2)
-                    sentence = "@{} おかえりなさい。\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],add*10,add,arimatsu)
-                    if add == 9.2: sentence = "@{} おかえりなさい。\n鉄道で144km移動。7.2アリマツ付与。往復でアリマツを2回通過。2アリマツ付与\n計{}アリマツ".format(tw_data["user"]["screen_name"],arimatsu)
+                    tokens = t.tokenize(tw_data["text"])
+                    keiyou = 0
+                    wakaru = ""
+                    for token in tokens:
+                        partOfSpeech = token.part_of_speech.split(",")[0]
+                        if partOfSpeech == "形容詞":
+                            keiyou += 1
+                            keiyoushi = token.surface
+                        if keiyou == 1:
+                            wakaru = "わかる{}い\n".format(keiyoushi[0:-1])
+                    sentence = "@{} おかえりなさい。\n{}鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],wakaru,add*10,add,arimatsu)
+                    if add == 9.2: sentence = "@{} おかえりなさい。\n{}鉄道で144km移動。7.2アリマツ付与。往復でアリマツを2回通過。2アリマツ付与\n計{}アリマツ".format(tw_data["user"]["screen_name"],wakaru,arimatsu)
                 check = -1
                 check = tw_data["text"].find("nosave")
                 if check != -1 and tw_data["user"]["screen_name"] == "senden_lite":
