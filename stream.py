@@ -12,6 +12,7 @@ from janome.tokenizer import Tokenizer
 import requests
 from requests_oauthlib import OAuth1
 
+
 def load_arimatsu(name):
     global arimatsu
     global arimatsu2
@@ -65,8 +66,10 @@ twice_flag = 0
 reply_id = ""
 t=Tokenizer()
 
+
 print(res)
 print("stream start")
+
 for line in res.iter_lines():
     if line:
         decoded_line = line.decode('utf-8')
