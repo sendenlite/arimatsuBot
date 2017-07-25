@@ -64,6 +64,7 @@ res = requests.post(streaming_url, auth=auth, stream=True, data=data)
 nosave_mode = 0
 twice_flag = 0
 reply_id = ""
+wakaru_add=""
 t=Tokenizer()
 
 
@@ -190,7 +191,9 @@ for line in res.iter_lines():
                             keiyou += 1
                             keiyoushi = token.surface
                         if keiyou == 1:
-                            wakaru = "わかる{}い\n".format(keiyoushi[0:-1])
+                            if keiyoushi[-1]!="い":
+                                wakaru_add="い"
+                            wakaru = "わかる{}{}\n".format(keiyoushi[0:-1],wakaru_add)
                     sentence = "@{} おかえりなさい。\n{}鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(tw_data["user"]["screen_name"],wakaru,add*10,add,arimatsu)
                     if add == 9.2: sentence = "@{} おかえりなさい。\n{}鉄道で144km移動。7.2アリマツ付与。往復でアリマツを2回通過。2アリマツ付与\n計{}アリマツ".format(tw_data["user"]["screen_name"],wakaru,arimatsu)
                 check = -1
