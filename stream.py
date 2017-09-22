@@ -16,7 +16,7 @@ class Arimatsu:
 
     mode_flag = 0
     # mode_flag 0 : normal  1 : NOT load janome.tokenizer(for debug)
-    nosave_mode = 1
+    nosave_mode = 0
     reply_id = ""
     timeline_url = "https://api.twitter.com/1.1/statuses/user_timeline.json"
     update_url =  "https://api.twitter.com/1.1/statuses/update.json"
@@ -181,20 +181,20 @@ class Arimatsu:
         self.tweet(sentence,name)
 
     def seizon(self,name):
-        self.loadArimatsu(name)
         sentence = "@{}\n（ ゜□ﾟ)＜せいぞん、せんりゃくうううううううう！！\nイマージーン！\nきっと何者にもなれないお前たちに告げる！\nhttp://nico.ms/sm24877123\n{}".format(name,datetime.now().strftime("%s"))
-        self.tweet(sentence,name)
+        self.tweet(sentence,name,save=False)
 
-    def tweet(self,sentence,name):
+    def tweet(self,sentence,name,save=True):
         if sentence != "":
-           if self.nosave_mode == 1 and name == "senden_lite":
-               sentence += "(nosave)"
-           data = {"status":sentence,"in_reply_to_status_id":self.tw_data["id_str"]}
-           if self.reply_id != "":
-               data = {"status":sentence,"in_reply_to_status_id":self.reply_id}
-               self.reply_id = ""   
-           res2 = requests.post(self.update_url, data=data, auth=self.auth)
-           self.saveArimatsu(name)
+            if self.nosave_mode == 1 and name == "senden_lite":
+                sentence += "(nosave)"
+            data = {"status":sentence,"in_reply_to_status_id":self.tw_data["id_str"]}
+            if self.reply_id != "":
+                data = {"status":sentence,"in_reply_to_status_id":self.reply_id}
+                self.reply_id = ""   
+            res2 = requests.post(self.update_url, data=data, auth=self.auth)
+            if save:
+                self.saveArimatsu(name)
 
     def listen(self):
         data = {}
