@@ -12,10 +12,10 @@ from janome.tokenizer import Tokenizer
 import requests
 from requests_oauthlib import OAuth1
 
+global arimatsu
+global arimatsu2
 
 def load_arimatsu(name):
-    global arimatsu
-    global arimatsu2
     f0 = open("data/{}.dat".format(name),"r")
     txt = f0.readlines()
     f0.close()
@@ -23,8 +23,6 @@ def load_arimatsu(name):
     arimatsu2 = arimatsu
 
 def save_arimatsu(name):
-    global arimatsu
-    global arimatsu2
     if nosave_mode == 1 and name =="senden_lite":
         arimatsu = arimatsu2
     f1 = open("data/{}.dat".format(name),"w")
