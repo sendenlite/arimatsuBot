@@ -14,6 +14,8 @@ from requests_oauthlib import OAuth1
 
 global arimatsu
 global arimatsu2
+mode_flag = 0
+#mode_flag 0 : normal  1 : NOT load janome.tokenizer(for debug)
 
 def load_arimatsu(name):
     f0 = open("data/{}.dat".format(name),"r")
@@ -63,7 +65,8 @@ nosave_mode = 0
 twice_flag = 0
 reply_id = ""
 wakaru_add=""
-t=Tokenizer()
+if mode_flag==0:
+    t=Tokenizer()
 
 
 print(res)
