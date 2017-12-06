@@ -14,7 +14,7 @@ from requests_oauthlib import OAuth1
 
 class Arimatsu:
 
-    mode_flag = 1
+    mode_flag = 0
     # mode_flag 0 : normal  1 : NOT load janome.tokenizer(for debug)
     nosave_mode = 0
     reply_id = ""
@@ -69,19 +69,21 @@ class Arimatsu:
                 self.men.append(fil[0:-4])
 
     def haifu(self,main_name,text): 
+        if main_name != "senden_lite" and main_name !="coppupan_lrc":
+            return
         sindex = text.find("(")
         findex = text.find(")")
         if sindex+1 == findex: return
         add = round(float(text[sindex+1:findex]),2)
         if add >= 1145148101920: return
         if add <= -1145148101920: return
-        self.ArimatsuManList()
-        sentence = "@{}\n{}アリマツ配布！\n現在アリマツ".format(main_name,round(add,5))
+        self.arimatsuManList()
+        sentence = "@{}\n{}アリマツ配布！\n現在アリマツ\n".format(main_name,round(add,5))
         for name in self.men:
             self.loadArimatsu(name)
             self.arimatsu = round(self.arimatsu + add,2)
             sentence += "@{} : {}\n".format(name,self.arimatsu)
-            if self.nosave_mode == 1 and main_name = "senden_lite":
+            if self.nosave_mode == 1 and main_name == "senden_lite":
                 self.saveArimatsu(name,nosave=True)
             else:
                 self.saveArimatsu(name)
