@@ -14,7 +14,7 @@ from requests_oauthlib import OAuth1
 
 class Arimatsu:
 
-    mode_flag = 0
+    mode_flag = 1
     # mode_flag 0 : normal  1 : NOT load janome.tokenizer(for debug)
     nosave_mode = 0
     reply_id = ""
@@ -52,12 +52,41 @@ class Arimatsu:
         self.arimatsu = float(txt[0].replace("\n",""))
         self.arimatsu2 = self.arimatsu
     
-    def saveArimatsu(self,name):
-        if self.nosave_mode == 1 and name =="senden_lite":
+    def saveArimatsu(self,name,nosave=False):
+        if (self.nosave_mode == 1 and name =="senden_lite") or nosave:
             self.arimatsu = self.arimatsu2
         f1 = open("data/{}.dat".format(name),"w")
         f1.write(str(self.arimatsu))
         f1.close()
+
+    def arimatsuManList(self):
+        self.files  = []
+        self.men  = []
+        self.files = os.listdir('/home/kohki/arimatsu/data/') 
+        self.files.remove('CONSUMER.dat')
+        for fil in self.files:
+            if fil.find('.dat')!=-1:
+                self.men.append(fil[0:-4])
+
+    def haifu(self,main_name,text): 
+        sindex = text.find("(")
+        findex = text.find(")")
+        if sindex+1 == findex: return
+        add = round(float(text[sindex+1:findex]),2)
+        if add >= 1145148101920: return
+        if add <= -1145148101920: return
+        self.ArimatsuManList()
+        sentence = "@{}\n{}アリマツ配布！\n現在アリマツ".format(main_name,round(add,5))
+        for name in self.men:
+            self.loadArimatsu(name)
+            self.arimatsu = round(self.arimatsu + add,2)
+            sentence += "@{} : {}\n".format(name,self.arimatsu)
+            if self.nosave_mode == 1 and main_name = "senden_lite":
+                self.saveArimatsu(name,nosave=True)
+            else:
+                self.saveArimatsu(name)
+        self.tweet(sentence,main_name,save=False)
+
 
     def tsugaku(self,name):
         self.loadArimatsu(name)
@@ -225,6 +254,11 @@ class Arimatsu:
                             check = self.tw_data["text"].find("アリマツ付与")
                             if check != -1:
                                 self.fuyo(self.tw_data["user"]["screen_name"],self.tw_data["text"])
+                            check = -1
+
+                            check = self.tw_data["text"].find("アリマツ配布")
+                            if check != -1:
+                                self.haifu(self.tw_data["user"]["screen_name"],self.tw_data["text"])
                             check = -1
         
                             check = self.tw_data["text"].find("ニューアリマツ")
