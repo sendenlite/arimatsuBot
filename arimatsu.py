@@ -8,6 +8,7 @@ import json
 import math
 from time import sleep
 from janome.tokenizer import Tokenizer
+import re
 # requstsライブラリをインポート
 import requests
 from requests_oauthlib import OAuth1
@@ -97,6 +98,7 @@ class Arimatsu:
         self.arimatsu = round(self.arimatsu + add,2)
         sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(name,add*10,add,self.arimatsu)
         if add == 9.2: sentence = "@{}\n鉄道で144km移動。7.2アリマツ付与。往復でアリマツを2回通過。2アリマツ付与\n計{}アリマツ".format(name,arimatsu)
+        self.addHistory(name,"{} > {}アリマツ付与(通学アリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
         self.tweet(sentence,name)
 
     def tetsudou(self,name,text):
@@ -127,6 +129,7 @@ class Arimatsu:
         self.loadArimatsu(name)
         self.arimatsu = round(self.arimatsu + add,2)
         sentence = "@{}\n鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(name,round(add*10,5),add,self.arimatsu)
+        self.addHistory(name,"{} > {}アリマツ付与(鉄道アリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
         self.tweet(sentence,name)
 
     def fuyo(self,name,text):
@@ -138,7 +141,8 @@ class Arimatsu:
         if add <= -1145148101920: return
         self.loadArimatsu(name)
         self.arimatsu = round(self.arimatsu + add,2)
-        sentence = "@{}\n{}アリマツ付与。\n計{}アリマツ。".format(name,round(add,5),self.arimatsu)
+        sentence = "@{} {}アリマツ付与。\n計{}アリマツ。".format(name,round(add,5),self.arimatsu)
+        self.addHistory(name,"{} > {}アリマツ付与".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
         self.tweet(sentence,name)
 
     def new(self,name,text):
@@ -148,6 +152,7 @@ class Arimatsu:
         if self.arimatsu < 0:
             self.arimatsu += 50
             sentence = "@{}\nアリマツ不足です。50以上アリマツがあるときに建造してください".format(name)
+        self.addHistory(name,"{} > ニューアリマツ建造".format(datetime.now().strftime('%Y/%m/%d %H:%M')))
         self.tweet(sentence,name)
 
     def kakunin(self,name):
@@ -159,6 +164,7 @@ class Arimatsu:
         self.loadArimatsu(name)
         self.arimatsu = round(self.arimatsu + 5,2)
         sentence = "@{}\nレポートアリマツ5アリマツ付与。\n計{}アリマツ。".format(name,self.arimatsu)
+        self.addHistory(name,"{} > {}アリマツ付与(レポートアリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
         self.tweet(sentence,name)
 
     def baito(self,name,text):
@@ -169,6 +175,7 @@ class Arimatsu:
         self.loadArimatsu(name)
         self.arimatsu = round(self.arimatsu + add,2)
         sentence = "@{}\nバイトアリマツ{}付与。\n計{}アリマツ。".format(name,add,self.arimatsu)
+        self.addHistory(name,"{} > {}アリマツ付与(バイトアリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
         self.tweet(sentence,name)
 
     def setArimatsu(self,name,text):
@@ -179,6 +186,7 @@ class Arimatsu:
         self.loadArimatsu(name)
         self.arimatsu = round(add,2)
         sentence = "@{}\narimatsu set.".format(name)
+        self.addHistory(name,"{} > {}アリマツset".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
         self.tweet(sentence,name)
 
     def tadaima(self,name,text):
@@ -199,6 +207,7 @@ class Arimatsu:
                 wakaru = "わかる{}い\n".format(keiyoushi[0:-1])
         sentence = "@{} おかえりなさい。\n{}鉄道で{}km移動。{}アリマツ付与。\n計{}アリマツ。".format(name,wakaru,add*10,add,self.arimatsu)
         if add == 9.2: sentence = "@{} おかえりなさい。\n{}鉄道で144km移動。7.2アリマツ付与。往復でアリマツを2回通過。2アリマツ付与\n計{}アリマツ".format(name,wakaru,self.arimatsu)
+        self.addHistory(name,"{} > {}アリマツ付与(通学アリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
         self.tweet(sentence,name)
 
     def nosave(self,name):
@@ -213,6 +222,18 @@ class Arimatsu:
     def seizon(self,name):
         sentence = "@{}\n（ ゜□ﾟ)＜せいぞん、せんりゃくうううううううう！！\nイマージーン！\nきっと何者にもなれないお前たちに告げる！\nhttp://nico.ms/sm24877123\n{}".format(name,datetime.now().strftime("%s"))
         self.tweet(sentence,name,save=False)
+
+    def getHistory(self,name):
+        hfile = open("data/{}.history".format(name),"r")
+        histories = ("@{}\n".format(name))+hfile.read()
+        self.tweet(histories,name,save=False)
+
+    def addHistory(self,name,sentence):
+        hfile = open("data/{}.history".format(name),"r")
+        histories = hfile.readlines()
+        histories = "".join(["{}\n".format(sentence)]+histories[0:4])
+        hfile = open("data/{}.history".format(name),"w")
+        hfile.write(histories)
 
     def tweet(self,sentence,name,save=True):
         if sentence != "":
@@ -306,6 +327,12 @@ class Arimatsu:
                             if check != -1:
                                 self.seizon(self.tw_data["user"]["screen_name"])
                             check = -1
+
+                            check = self.tw_data["text"].find("アリマツ履歴")
+                            if check != -1:
+                                self.getHistory(self.tw_data["user"]["screen_name"])
+                            check = -1
+
         
 #                            if self.tw_data["text"][0:16] == "@bdbdbot python:" or self.tw_data["text"][0:11] == "@bdbdbot c:":
 #                                arimatsu.loadArimatsu(self.tw_data["user"]["screen_name"])
