@@ -9,6 +9,7 @@ import math
 from time import sleep
 from janome.tokenizer import Tokenizer
 import re
+import random
 # requstsライブラリをインポート
 import requests
 from requests_oauthlib import OAuth1
@@ -44,6 +45,8 @@ class Arimatsu:
             count += 1
         
         self.auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
+        pattern = r"^@bdbdbot\s+(\d)[Dd](\d+)"
+        self.repatter = re.compile(pattern)
 
     def loadArimatsu(self,name):
         f0 = open("data/{}.dat".format(name),"r")
@@ -235,6 +238,14 @@ class Arimatsu:
         hfile = open("data/{}.history".format(name),"w")
         hfile.write(histories)
 
+    def dice(self,name,amount,size):
+        dd = []
+        for i in range(int(amount)):
+            d = random.randint(1,int(size))
+            dd.append(d)
+        sentence = "@{}\n[ {} ]\n計{}".format(name," ".join(list(map(str,dd))),sum(dd))
+        self.tweet(sentence,name,save=False)
+
     def tweet(self,sentence,name,save=True):
         if sentence != "":
             if self.nosave_mode == 1 and name == "senden_lite":
@@ -327,6 +338,10 @@ class Arimatsu:
                             if check != -1:
                                 self.seizon(self.tw_data["user"]["screen_name"])
                             check = -1
+
+                            m = self.repatter.search(self.tw_data["text"])
+                            if m:
+                                self.dice(self.tw_data["user"]["screen_name"],m.group(1),m.group(2))
 
                             check = self.tw_data["text"].find("アリマツ履歴")
                             if check != -1:
