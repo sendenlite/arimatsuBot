@@ -170,6 +170,15 @@ class Arimatsu:
         self.addHistory(name,"{} > {}アリマツ付与(レポートアリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
         self.tweet(sentence,name)
 
+
+    def ohayo(self,name):
+        self.loadArimatsu(name)
+        self.arimatsu = round(self.arimatsu + 5,2)
+        sentence = "@{}\nおはようございます\n5アリマツ付与。\n計{}アリマツ。".format(name,self.arimatsu)
+        self.addHistory(name,"{} > {}アリマツ付与(おはようアリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
+        self.tweet(sentence,name)
+
+
     def baito(self,name,text):
         sindex = text.find("(")
         findex = text.find(")")
@@ -347,6 +356,12 @@ class Arimatsu:
                             if check != -1:
                                 self.getHistory(self.tw_data["user"]["screen_name"])
                             check = -1
+
+                            check = self.tw_data["text"].find("おはよう")
+                            if check != -1:
+                                self.ohayo(self.tw_data["user"]["screen_name"])
+                            check = -1
+
 
         
 #                            if self.tw_data["text"][0:16] == "@bdbdbot python:" or self.tw_data["text"][0:11] == "@bdbdbot c:":
