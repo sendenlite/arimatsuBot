@@ -10,6 +10,7 @@ from time import sleep
 from janome.tokenizer import Tokenizer
 import re
 import random
+import subprocess
 # requstsライブラリをインポート
 import requests
 from requests_oauthlib import OAuth1
@@ -21,6 +22,7 @@ class Arimatsu:
     update_url =  "https://api.twitter.com/1.1/statuses/update.json"
     streaming_url = "https://userstream.twitter.com/1.1/user.json"
     mention_url = "https://api.twitter.com/1.1/statuses/mentions_timeline.json"
+    media_url = "https://upload.twitter.com/1.1/media/upload.json"
 
     def __init__(self,mode_flag=0,nosave_mode=0):
         self.mode_flag = mode_flag
@@ -148,6 +150,42 @@ class Arimatsu:
         self.addHistory(name,"{} > {}アリマツ付与".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
         self.tweet(sentence,name)
 
+    def getMap(self,name,text):
+        sindex = text.find("(")
+        findex = text.find(")")
+        if sindex+1 == findex: return
+        town = text[sindex+1:findex]
+        sentence = "@{}".format(name)
+        if town.find("愛知") != -1:
+            self.saveMapImage(2, "image/Aichi.jpg")
+            self.tweetWithMedia(sentence ,name, "image/Aichi.jpg")
+        elif town.find("名古屋") != -1:
+            self.saveMapImage(3, "image/Nagoya.jpg")
+            self.tweetWithMedia(sentence ,name, "image/Nagoya.jpg")
+        elif town.find("東京") != -1:
+            self.saveMapImage(1, "image/Tokyo.jpg")
+            self.tweetWithMedia(sentence ,name, "image/Tokyo.jpg")
+        elif town.find("神奈川") != -1:
+            self.saveMapImage(4, "image/Kanagawa.jpg")
+            self.tweetWithMedia(sentence ,name, "image/Kanagawa.jpg")
+        elif town.find("埼玉") != -1:
+            self.saveMapImage(5, "image/Saitama.jpg")
+            self.tweetWithMedia(sentence ,name, "image/Saitama.jpg")
+        elif town.find("大阪") != -1:
+            self.saveMapImage(6, "image/Osaka.jpg")
+            self.tweetWithMedia(sentence ,name, "image/Osaka.jpg")
+
+
+    def saveMapImage(self,number,fileName):
+        check = subprocess.check_output(["php", "url.php", number])
+        url = check.decode('utf-8').strip()
+
+        cc = subprocess.call(["wget", "-o", fileName, url])
+        if cc != 0:
+            print("Error! canoot get image.")
+
+
+
     def new(self,name,text):
         self.loadArimatsu(name)
         self.arimatsu = round(self.arimatsu - 50,2)
@@ -273,6 +311,23 @@ class Arimatsu:
             if save:
                 self.saveArimatsu(name)
 
+
+    def tweetWithMedia(self,sentence,name,fileName):
+        files = {"media":open(fileName, 'rb')}
+        data = {"status":sentence, "in_reply_to_status_id":self.tw_data["id_str"]}
+
+        res2 = requests.post(self.media_url, files=files, auth=self.auth)
+        media_id = ""
+        media_id = res2.json()['media_id']
+        if media_id == "":
+            return
+
+        params = {'media_ids':media_id}
+
+        res3 = requests.post(self.update_url, data=data, params=params, auth=self.auth)
+   
+
+
     def listen(self):
         data = {}
         self.res = requests.post(self.streaming_url, auth=self.auth, stream=True, data=data)
@@ -366,6 +421,11 @@ class Arimatsu:
                             check = self.tw_data["text"].find("おはよ")
                             if check != -1:
                                 self.ohayo(self.tw_data["user"]["screen_name"])
+                            check = -1
+
+                            check = self.tw_data["text"].find("アリマツマップ")
+                            if check != -1:
+                                self.getMap(self.tw_data["user"]["screen_name"],self.tw_data["text"])
                             check = -1
 
 
