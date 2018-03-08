@@ -167,15 +167,21 @@ class Arimatsu:
         self.loadArimatsu(name)
         self.arimatsu = round(self.arimatsu + 5,2)
         sentence = "@{}\nレポートアリマツ5アリマツ付与。\n計{}アリマツ。".format(name,self.arimatsu)
-        self.addHistory(name,"{} > {}アリマツ付与(レポートアリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
+        self.addHistory(name,"{} > {}アリマツ付与(レポートアリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(5,5)))
         self.tweet(sentence,name)
 
 
     def ohayo(self,name):
         self.loadArimatsu(name)
         self.arimatsu = round(self.arimatsu + 5,2)
-        sentence = "@{}\nおはようございます\n5アリマツ付与。\n計{}アリマツ。".format(name,self.arimatsu)
-        self.addHistory(name,"{} > {}アリマツ付与(おはようアリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(add,5)))
+        replies = ['おはよう！','おはようございます。','おはよおおおおお\nこんちはああああ\nこんばんはあああ\nおやすみいいいい\n起きてぇぇぇぇぇえええええ！','おはよー！！！起きて！！！朝だよ！！！すごい朝！！！外が明るい！！！！カンカンカンカンカンカンカンカンカンカンカンカン！！！おはよ！！！見て見て！！！外明るいの！！！外！！！！見て！！！カンカンカン！！！','おはよう^^','おはよう','おはようございます。','Good morning!','Guten Morgen.','おはようなの',]
+        if name == 'ChyMzkP': replies += ['早上好','早上好','早上好','早上好','早上好'] 
+        addSentence = ''
+        if datetime.now().hour >= 14: addSentence = 'もう昼過ぎだゾ\n' 
+        elif datetime.now().hour <= 4: addSentence = '朝早スギィ！！\n'
+        sentence = "@{}\n{}\n{}5アリマツ付与。\n計{}アリマツ。".format(name,random.choice(replies),addSentence,self.arimatsu)
+        if len(sentence) >= 140: sentence = "@{}\n{}\n5アリマツ付与。\n計{}アリマツ。".format(name,random.choice(replies),self.arimatsu)
+        self.addHistory(name,"{} > {}アリマツ付与(おはようアリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(5,5)))
         self.tweet(sentence,name)
 
 
@@ -357,7 +363,7 @@ class Arimatsu:
                                 self.getHistory(self.tw_data["user"]["screen_name"])
                             check = -1
 
-                            check = self.tw_data["text"].find("おはよう")
+                            check = self.tw_data["text"].find("おはよ")
                             if check != -1:
                                 self.ohayo(self.tw_data["user"]["screen_name"])
                             check = -1
