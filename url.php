@@ -95,6 +95,21 @@ echo $string;
 
 $string = "https://map.yahooapis.jp/map/V1/static?width=$width3&height=$height3&lat=35.145564&lon=136.913060&z=13&appid=dj00aiZpPW1JSEhhelFObmM2aiZzPWNvbnN1bWVyc2VjcmV0Jng9Mzk-&mode=blankmap&style=";
 
+    try {
+        $pdo = new PDO('mysql:host=localhost;dbname=arimatsu;charset=utf8',MYSQL_USER,MYSQL_PASSWORD,
+            array(PDO::ATTR_EMULATE_PREPARES => false));
+    } catch (PDOException $e) {
+         exit("\"\n<span class=\"warn\">データベースに接続できません。</span>\n<br>".date( "Y/m/d H:i.s", $_SERVER['REQUEST_TIME'])."\n<br><br>\n".$e->getMessage());
+    }
+
+    $stmt = $pdo -> prepare("select code, own from Aichi");
+    $stmt->execute();
+    foreach ($stmt as $result){
+        $AichiCode[] = $result['code'];
+        $AichiOwn += array($result['code'] => $result['own']);
+    }
+    unset($result);
+
     for ($i=0;$i<count($AichiCode);$i++) {
         if ($AichiOwn[$AichiCode[$i]]==1){
             $string .= "bm.p.${AichiCode[$i]}:9370DB|";
