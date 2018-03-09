@@ -157,32 +157,34 @@ class Arimatsu:
         town = text[sindex+1:findex]
         sentence = "@{}".format(name)
         if town.find("愛知") != -1:
-            self.saveMapImage(2, "image/Aichi.jpg")
-            self.tweetWithMedia(sentence ,name, "image/Aichi.jpg")
+            self.saveMapImage(2, "image/Aichi.png")
+            self.tweetWithMedia(sentence ,name, "image/Aichi.png")
         elif town.find("名古屋") != -1:
-            self.saveMapImage(3, "image/Nagoya.jpg")
-            self.tweetWithMedia(sentence ,name, "image/Nagoya.jpg")
+            self.saveMapImage(3, "image/Nagoya.png")
+            self.tweetWithMedia(sentence ,name, "image/Nagoya.png")
         elif town.find("東京") != -1:
-            self.saveMapImage(1, "image/Tokyo.jpg")
-            self.tweetWithMedia(sentence ,name, "image/Tokyo.jpg")
+            self.saveMapImage(1, "image/Tokyo.png")
+            self.tweetWithMedia(sentence ,name, "image/Tokyo.png")
         elif town.find("神奈川") != -1:
-            self.saveMapImage(4, "image/Kanagawa.jpg")
-            self.tweetWithMedia(sentence ,name, "image/Kanagawa.jpg")
+            self.saveMapImage(4, "image/Kanagawa.png")
+            self.tweetWithMedia(sentence ,name, "image/Kanagawa.png")
         elif town.find("埼玉") != -1:
-            self.saveMapImage(5, "image/Saitama.jpg")
-            self.tweetWithMedia(sentence ,name, "image/Saitama.jpg")
+            self.saveMapImage(5, "image/Saitama.png")
+            self.tweetWithMedia(sentence ,name, "image/Saitama.png")
         elif town.find("大阪") != -1:
-            self.saveMapImage(6, "image/Osaka.jpg")
-            self.tweetWithMedia(sentence ,name, "image/Osaka.jpg")
+            self.saveMapImage(6, "image/Osaka.png")
+            self.tweetWithMedia(sentence ,name, "image/Osaka.png")
 
 
     def saveMapImage(self,number,fileName):
-        check = subprocess.check_output(["php", "url.php", number])
+        check = subprocess.check_output(["php", "url.php", str(number)])
         url = check.decode('utf-8').strip()
 
-        cc = subprocess.call(["wget", "-o", fileName, url])
-        if cc != 0:
-            print("Error! canoot get image.")
+        response = requests.get(url)
+
+        with open(fileName, "wb") as fout:
+            fout.write(response.content)
+
 
 
 
