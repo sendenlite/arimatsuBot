@@ -212,13 +212,18 @@ class Arimatsu:
 
 
     def ohayo(self,name):
+        if datetime.now().hour < 5 or datetime.now().hour >16:
+            sentence = "@{}おやすみ".format(name)
+            self.tweet(sentence,name,save=False)
+            return
+
         self.loadArimatsu(name)
         self.arimatsu = round(self.arimatsu + 5,2)
-        replies = ['おはよう！','おはようございます。','おはよおおおおお\nこんちはああああ\nこんばんはあああ\nおやすみいいいい\n起きてぇぇぇぇぇえええええ！','おはよー！！！起きて！！！朝だよ！！！すごい朝！！！外が明るい！！！！カンカンカンカンカンカンカンカンカンカンカンカン！！！おはよ！！！見て見て！！！外明るいの！！！外！！！！見て！！！カンカンカン！！！','おはよう^^','おはよう','おはようございます。','Good morning!','Guten Morgen.','おはようなの',]
+        replies = ['おはよう！','おはようございます。','おはよおおおおお\nこんちはああああ\nこんばんはあああ\nおやすみいいいい\n起きてぇぇぇぇぇえええええ！','おはよー！！！起きて！！！朝だよ！！！すごい朝！！！外が明るい！！！！カンカンカンカンカンカンカンカンカンカンカンカン！！！おはよ！！！見て見て！！！外明るいの！！！外！！！！見て！！！カンカンカン！！！','おはよう^^','おはよう','おはようございます。','Good morning!','Guten Morgen.','おはようなの','おはよー！']
         if name == 'ChyMzkP': replies += ['早上好','早上好','早上好','早上好','早上好'] 
         addSentence = ''
-        if datetime.now().hour >= 14: addSentence = 'もう昼過ぎだゾ\n' 
-        elif datetime.now().hour <= 4: addSentence = '朝早スギィ！！\n'
+        if datetime.now().hour >= 13: addSentence = 'もう昼過ぎだぞい\n' 
+        elif datetime.now().hour == 5: addSentence = '朝早スギィ！！\n'
         sentence = "@{}\n{}\n{}5アリマツ付与。\n計{}アリマツ。".format(name,random.choice(replies),addSentence,self.arimatsu)
         if len(sentence) >= 140: sentence = "@{}\n{}\n5アリマツ付与。\n計{}アリマツ。".format(name,random.choice(replies),self.arimatsu)
         self.addHistory(name,"{} > {}アリマツ付与(おはようアリマツ)".format(datetime.now().strftime('%Y/%m/%d %H:%M'),round(5,5)))
