@@ -174,6 +174,9 @@ class Arimatsu:
         elif town.find("大阪") != -1:
             self.saveMapImage(6, "image/Osaka.png")
             self.tweetWithMedia(sentence ,name, "image/Osaka.png")
+        elif town.find("三重") != -1:
+            self.saveMapImage(7, "image/Mie.png")
+            self.tweetWithMedia(sentence ,name, "image/Mie.png")
 
 
     def saveMapImage(self,number,fileName):

@@ -21,6 +21,8 @@ $SaitamaCode = array();
 $SaitamaOwn = array();
 $OsakaCode = array();
 $OsakaOwn = array();
+$MieCode = array();
+$MieOwn = array();
 
 
 require 'initialize.php';
@@ -223,7 +225,38 @@ $string = "https://map.yahooapis.jp/map/V1/static?width=490&height=760&lat=34.66
 
 
 echo $string;
+}elseif($argv[1]=="7"){
+
+
+
+
+$string = "https://map.yahooapis.jp/map/V1/static?width=490&height=760&lat=34.663663&lon=135.419200&z=11&appid=dj00aiZpPW1JSEhhelFObmM2aiZzPWNvbnN1bWVyc2VjcmV0Jng9Mzk-&mode=blankmap&style=bm.b.state:DC143C|";
+
+
+    try {
+        $pdo = new PDO('mysql:host=localhost;dbname=arimatsu;charset=utf8',MYSQL_USER,MYSQL_PASSWORD,
+            array(PDO::ATTR_EMULATE_PREPARES => false));
+    } catch (PDOException $e) {
+         exit("\"\n<span class=\"warn\">データベースに接続できません。</span>\n<br>".date( "Y/m/d H:i.s", $_SERVER['REQUEST_TIME'])."\n<br><br>\n".$e->getMessage());
+    }
+
+    $stmt = $pdo -> prepare("select code, own from Osaka");
+    $stmt->execute();
+    foreach ($stmt as $result){
+        $MieCode[] = $result['code'];
+        $MieOwn += array($result['code'] => $result['own']);
+    }
+    unset($result);
+    for ($i=0;$i<count($MieCode);$i++) {
+        if ($MieOwn[$MieCode[$i]]==6){
+            $string .= "bm.p.${MieCode[$i]}:3CB371|";
+        }
+    }
+
+
+echo $string;
 }
+
 
 ?>
 
