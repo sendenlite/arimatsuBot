@@ -230,7 +230,7 @@ echo $string;
 
 
 
-$string = "https://map.yahooapis.jp/map/V1/static?width=490&height=760&lat=34.663663&lon=135.419200&z=11&appid=dj00aiZpPW1JSEhhelFObmM2aiZzPWNvbnN1bWVyc2VjcmV0Jng9Mzk-&mode=blankmap&style=bm.b.state:DC143C|";
+$string = "https://map.yahooapis.jp/map/V1/static?width=490&height=760&lat=34.523576&lon=136.4&z=11&appid=dj00aiZpPW1JSEhhelFObmM2aiZzPWNvbnN1bWVyc2VjcmV0Jng9Mzk-&mode=blankmap&style=bm.b.state:DC143C|";
 
 
     try {
