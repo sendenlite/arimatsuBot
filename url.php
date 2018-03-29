@@ -240,7 +240,7 @@ $string = "https://map.yahooapis.jp/map/V1/static?width=490&height=760&lat=34.66
          exit("\"\n<span class=\"warn\">データベースに接続できません。</span>\n<br>".date( "Y/m/d H:i.s", $_SERVER['REQUEST_TIME'])."\n<br><br>\n".$e->getMessage());
     }
 
-    $stmt = $pdo -> prepare("select code, own from Osaka");
+    $stmt = $pdo -> prepare("select code, own from Mie");
     $stmt->execute();
     foreach ($stmt as $result){
         $MieCode[] = $result['code'];
@@ -248,8 +248,8 @@ $string = "https://map.yahooapis.jp/map/V1/static?width=490&height=760&lat=34.66
     }
     unset($result);
     for ($i=0;$i<count($MieCode);$i++) {
-        if ($MieOwn[$MieCode[$i]]==6){
-            $string .= "bm.p.${MieCode[$i]}:3CB371|";
+        if ($MieOwn[$MieCode[$i]]==3){
+            $string .= "bm.p.${MieCode[$i]}:FFA500|";
         }
     }
 
